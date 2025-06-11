@@ -1,83 +1,55 @@
-// Mobile Menu Toggle
-document.querySelector('.mobile-menu').addEventListener('click', function() {
-    document.querySelector('nav ul').classList.toggle('active');
-    this.querySelector('i').classList.toggle('fa-times');
-    this.querySelector('i').classList.toggle('fa-bars');
-});
-
-// Smooth Scrolling for Anchor Links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
+// Menu Mobile
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuBtn = document.querySelector('.mobile-menu');
+    const navUl = document.querySelector('nav ul');
+    
+    mobileMenuBtn.addEventListener('click', function() {
+        navUl.classList.toggle('active');
+        this.querySelector('i').classList.toggle('fa-times');
+        this.querySelector('i').classList.toggle('fa-bars');
+    });
+    
+    // Fermer le menu lorsqu'un lien est cliqué
+    document.querySelectorAll('nav ul li a').forEach(link => {
+        link.addEventListener('click', () => {
+            navUl.classList.remove('active');
+            mobileMenuBtn.querySelector('i').classList.add('fa-bars');
+            mobileMenuBtn.querySelector('i').classList.remove('fa-times');
         });
-        
-        // Close mobile menu if open
-        if (document.querySelector('nav ul').classList.contains('active')) {
-            document.querySelector('nav ul').classList.remove('active');
-            document.querySelector('.mobile-menu i').classList.remove('fa-times');
-            document.querySelector('.mobile-menu i').classList.add('fa-bars');
-        }
     });
-});
-
-// Header Scroll Effect
-window.addEventListener('scroll', function() {
-    const header = document.querySelector('header');
-    if (window.scrollY > 100) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
-});
-
-// Form Submission
-document.getElementById('contact-form').addEventListener('submit', function(e) {
-    e.preventDefault();
     
-    // Get form values
-    const name = document.getElementById('name').value;
-    const phone = document.getElementById('phone').value;
-    const service = document.getElementById('service').value;
-    
-    // Here you would typically send the data to a server
-    console.log('Form submitted:', { name, phone, service });
-    
-    // Show success message
-    alert(`Merci ${name}, votre demande de rendez-vous pour ${service} a été enregistrée. Nous vous contacterons bientôt au ${phone}.`);
-    
-    // Reset form
-    this.reset();
-});
-
-// Animate on Scroll
-function animateOnScroll() {
-    const elements = document.querySelectorAll('.animate-on-scroll');
-    
-    elements.forEach(element => {
-        const elementPosition = element.getBoundingClientRect().top;
-        const screenPosition = window.innerHeight / 1.2;
+    // Animation au scroll
+    const animateOnScroll = function() {
+        const elements = document.querySelectorAll('.service-card, .tech-item, .contact-info, .contact-map');
         
-        if (elementPosition < screenPosition) {
-            element.classList.add('animated');
-        }
+        elements.forEach(element => {
+            const elementPosition = element.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+            
+            if (elementPosition < screenPosition) {
+                element.classList.add('animate-fadeInUp');
+            }
+        });
+    };
+    
+    window.addEventListener('scroll', animateOnScroll);
+    animateOnScroll(); // Pour animer les éléments déjà visibles au chargement
+    
+    // Smooth scrolling pour les ancres
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
     });
-}
-
-// Initialize animations on load
-window.addEventListener('load', animateOnScroll);
-window.addEventListener('scroll', animateOnScroll);
-
-// Add animate-on-scroll class to sections
-document.querySelectorAll('section').forEach((section, index) => {
-    if (index > 0) { // Skip first section (hero)
-        section.classList.add('animate-on-scroll');
-    }
-});
-
-// Add delay classes to service cards
-document.querySelectorAll('.service-card').forEach((card, index) => {
-    card.classList.add(`delay-${index % 3}`);
 });
